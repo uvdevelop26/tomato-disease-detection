@@ -99,6 +99,106 @@ router.post('/users/create', (req, res) => {
     });
 });
 
+/* ruta para editar usuario */
+router.get('/users/:id', (req, res) => {
+    const userId = req.params.id;
+
+    const query = `SELECT 
+        personas.id as persona_id, 
+        personas.nombre, 
+        personas.apellido, 
+        personas.dni, 
+        personas.telefono, 
+        personas.fecha_nacimiento, 
+        personas.edad, 
+        personas.sexo, 
+        personas.direccion, 
+        personas.ciudade_id,
+        users.correo, 
+        users.password, 
+        users.role_id
+        FROM 
+            personas
+        JOIN 
+            users ON personas.user_id = users.id
+        WHERE 
+            users.id = ?`
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            console.error('Error al obtener el usuario:', err);
+            return res.status(500).json({ message: 'Error al obtener el usuario' });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json(result[0]);
+    });
+});
+
+/* ruta para actualizar */
+router.put('/users/:id', (req, res) => {
+    const userId = req.params.id;
+    const { nombre, apellido, dni, telefono, fecha_nacimiento, edad, sexo, direccion, ciudade_id, correo, password, role_id } = req.body;
+
+    // Consulta para actualizar la tabla "personas"
+    const queryPersonas = `
+        UPDATE personas 
+        SET nombre = ?, apellido = ?, dni = ?, telefono = ?, fecha_nacimiento = ?, edad = ?, sexo = ?, direccion = ?, ciudade_id = ?
+        WHERE user_id = ?
+    `;
+
+    // Consulta para actualizar la tabla "users"
+    const queryUsers = `
+        UPDATE users 
+        SET correo = ?, password = ?, role_id = ?
+        WHERE id = ?
+    `;
+
+    // Ejecutar ambas consultas
+    db.query(queryPersonas, [nombre, apellido, dni, telefono, fecha_nacimiento, edad, sexo, direccion, ciudade_id, userId], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar los datos de la persona:', err);
+            return res.status(500).json({ message: 'Error al actualizar los datos de la persona' });
+        }
+
+        // Actualizar la tabla "users" después de actualizar "personas"
+        db.query(queryUsers, [correo, password, role_id, userId], (err, result) => {
+            if (err) {
+                console.error('Error al actualizar el usuario:', err);
+                return res.status(500).json({ message: 'Error al actualizar el usuario' });
+            }
+
+            res.status(200).json({ message: 'Usuario y datos de persona actualizados correctamente' });
+        });
+    });
+});
+
+//delete user
+router.delete('/users/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Primero elimina el registro de la tabla personas
+    const deletePersonQuery = 'DELETE FROM personas WHERE user_id = ?';
+    db.query(deletePersonQuery, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar la persona:', err);
+            return res.status(500).json({ message: 'Error al eliminar la persona' });
+        }
+
+        // Después elimina el registro de la tabla users
+        const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+        db.query(deleteUserQuery, [id], (err, result) => {
+            if (err) {
+                console.error('Error al eliminar el usuario:', err);
+                return res.status(500).json({ message: 'Error al eliminar el usuario' });
+            }
+            res.status(200).json({ message: 'Usuario y persona eliminados exitosamente' });
+        });
+    });
+});
+
 
 
 export default router;

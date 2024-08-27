@@ -10,7 +10,10 @@ import CreateUser from "@/views/users/CreateUser.vue"
 import CreateRole from '@/views/roles/CreateRole.vue'
 import CreateFinca from '@/views/fincas/CreateFinca.vue'
 import CreateCultivo from '@/views/cultivos/CreateCultivo.vue'
-
+import EditUser from "@/views/users/EditUser.vue"
+import EditRole from "@/views/roles/EditRole.vue"
+import EditFinca from "@/views/fincas/EditFinca.vue"
+import EditCultivo from "@/views/cultivos/EditCultivo.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +29,7 @@ const router = createRouter({
       component: Dashboard,
       meta: { requiresAuth: true },
     },
+    /* users */
     {
       path: '/users',
       name: 'users',
@@ -39,6 +43,14 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/users/edit/:id',
+      name: 'EditUser',
+      component: EditUser, // Carga la vista de edición de usuario
+      meta: { requiresAuth: true },
+    },
+
+    /* roles */
+    {
       path: '/roles',
       name: 'roles',
       component: roleIndex,
@@ -50,6 +62,14 @@ const router = createRouter({
       component: CreateRole,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/roles/edit/:id',
+      name: 'editRole',
+      component: EditRole,
+      meta: { requiresAuth: true },
+    },
+
+    /* fincas */
     {
       path: '/fincas',
       name: 'fincas',
@@ -63,22 +83,37 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/fincas/edit/:id',
+      name: 'editFinca',
+      component: EditFinca,
+      meta: { requiresAuth: true },
+    },
+
+
+    /* cultivos */
+    {
       path: '/cultivos',
       name: 'cultivos',
       component: cultivoIndex,
       meta: { requiresAuth: true },
     },
-     {
+    {
       path: '/cultivos/create',
       name: 'CreateCultivo',
       component: CreateCultivo,
       meta: { requiresAuth: true },
-    }, 
+    },
     {
       path: '/capturar',
       name: 'capturar',
       component: Capturar
-    }
+    },
+    {
+      path: '/cultivos/edit/:id',
+      name: 'editCultivo',
+      component: EditCultivo,
+      meta: { requiresAuth: true },
+    },
   ]
 });
 

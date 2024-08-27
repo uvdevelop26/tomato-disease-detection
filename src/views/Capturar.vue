@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import AppLayout from "@/components/Layout/AppLayout.vue";
-import * as tf from '@tensorflow/tfjs';
+import * as tf from "@tensorflow/tfjs";
+import Icon from "@/components/icons/Icon.vue";
 
 const video = ref(null);
 const canvas = ref(null);
@@ -202,7 +203,9 @@ onMounted(() => {
   <AppLayout>
     <div class="flex flex-col gap-4">
       <div>
-        <h1 class="text-2xl text-primary font-bold underline">Nuevo Análisis</h1>
+        <h1 class="text-2xl text-primary font-bold underline">
+          Nuevo Análisis
+        </h1>
       </div>
       <div class="mt-3">
         <div class="max-w-2xl mx-auto">
@@ -210,7 +213,7 @@ onMounted(() => {
             <video
               ref="video"
               id="video"
-              class="border-2 border-blue-500"
+              class="border-2 border-primary rounded-md"
               playsinline
               autoplay
               style="width: 100%"
@@ -220,7 +223,7 @@ onMounted(() => {
               id="canvas"
               width="400"
               height="400"
-              style="max-width: 100%; display: none;"
+              style="max-width: 100%; display: none"
             ></canvas>
             <canvas
               ref="othercanvas"
@@ -231,20 +234,21 @@ onMounted(() => {
             ></canvas>
             <div id="resultado"></div>
           </div>
-          <button
-            class="inline-block max-w-52 mx-auto px-4 py-2 bg-green-600 rounded-md text-white font-bold border-b-2 border-green-800 hover:bg-white hover:text-green-600 hover:border"
-            id="capturar-foto"
-            @click="tomarFoto"
-          >
-            Tomar Foto
-          </button>
-          <button
-            class="inline-block max-w-52 mx-auto px-4 py-2 bg-blue-600 rounded-md text-white font-bold border-b-2 border-blue-800 hover:bg-white hover:text-blue-600 hover:border"
-            id="cambiar-camara"
-            @click="cambiarCamara"
-          >
-            Cambiar cámara
-          </button>
+          <div class="pt-4 flex gap-4 justify-center">
+            <button
+              class="inline-block px-5 py-5 rounded-full bg-light-green-two hover:shadow-md"
+              id="capturar-foto"
+              @click="tomarFoto"
+            >
+              <Icon name="circle" class="w-4 h-4 fill-primary" />
+            </button>
+            <button
+              class="inline-block px-5 py-5 rounded-full bg-light-green-two hover:shadow-md"
+              @click="cambiarCamara"
+            >
+              <Icon name="switch" class="w-4 h-4 fill-primary" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,10 +1,17 @@
 <script setup>
 import Icon from "../icons/Icon.vue";
 import { ref, onMounted, onUnmounted } from "vue";
+import router from "@/router";
 
 const isMobile = ref(null);
 let mql = null;
 const sidebar = ref(false);
+
+const isActive = (path) => {
+  const currentPath = router.currentRoute.value.fullPath;
+
+  return currentPath.startsWith(path) ? true : false;
+};
 
 const handleMqlChange = (e) => {
   isMobile.value = e.matches;
@@ -41,7 +48,7 @@ onUnmounted(() => {
   <div
     class="h-screen w-full overflow-y-auto relative lg:flex lg:flex-row-reverse">
     <div class="w-full h-full overflow-y-auto">
-       <!-- header -->
+      <!-- header -->
       <header
         class="fixed h-20 w-full bg-nature-image bg-cover shadow flex items-center justify-end px-4">
         <button
@@ -55,7 +62,7 @@ onUnmounted(() => {
         </button>
       </header>
       <!-- content -->
-      <div class="w-full h-full overflow-y-auto container pt-24 ">
+      <div class="w-full h-full overflow-y-auto container pt-24">
         <slot />
       </div>
     </div>
@@ -83,43 +90,123 @@ onUnmounted(() => {
         </div>
         <ul
           class="w-full pt-8 px-3 flex flex-col gap-3 max-w-80 sm:px-4 md:px-8 md:max-w-[22rem] lg:px-4 lg:gap-4">
-          <li class="h-11 px-3 bg-white rounded-2xl shadow">
+          <li
+            class="h-11 px-3 rounded-2xl shadow"
+            :class="{
+              'bg-primary': isActive('/dashboard'),
+              'bg-white': !isActive('/dashboard'),
+            }">
             <router-link
               to="/dashboard"
-              class="w-full h-full flex items-center gap-2 font-bold text-primary">
-              <Icon name="home" class="inline-block w-4 h-4 fill-primary" />
+              class="w-full h-full flex items-center gap-2 font-bold"
+              :class="{
+                'text-white': isActive('/dashboard'),
+                'text-primary': !isActive('/dashboard'),
+              }">
+              <Icon
+                name="home"
+                class="inline-block w-4 h-4"
+                :class="{
+                  'fill-white': isActive('/dashboard'),
+                  'fill-primary': !isActive('/dashboard'),
+                }"
+              />
               Dashboard
             </router-link>
           </li>
-          <li class="h-11 px-3 bg-white rounded-2xl shadow">
+          <li
+            class="h-11 px-3 rounded-2xl shadow"
+            :class="{
+              'bg-primary': isActive('/users'),
+              'bg-white': !isActive('/users'),
+            }">
             <router-link
               to="/users"
-              class="w-full h-full flex items-center gap-2 font-bold text-primary">
-              <Icon name="user" class="inline-block w-4 h-4 fill-primary" />
+              class="w-full h-full flex items-center gap-2 font-bold"
+              :class="{
+                'text-white': isActive('/users'),
+                'text-primary': !isActive('/users'),
+              }">
+              <Icon
+                name="user"
+                class="inline-block w-4 h-4"
+                :class="{
+                  'fill-white': isActive('/users'),
+                  'fill-primary': !isActive('/users'),
+                }"
+              />
               Usuarios
             </router-link>
           </li>
-          <li class="h-11 px-3 bg-white rounded-2xl shadow">
+          <li
+            class="h-11 px-3 rounded-2xl shadow"
+            :class="{
+              'bg-primary': isActive('/roles'),
+              'bg-white': !isActive('/roles'),
+            }">
             <router-link
               to="/roles"
-              class="w-full h-full flex items-center gap-2 font-bold text-primary">
-              <Icon name="roles" class="inline-block w-4 h-4 fill-primary" />
+              class="w-full h-full flex items-center gap-2 font-bold"
+              :class="{
+                'text-white': isActive('/roles'),
+                'text-primary': !isActive('/roles'),
+              }">
+              <Icon
+                name="roles"
+                class="inline-block w-4 h-4"
+                :class="{
+                  'fill-white': isActive('/roles'),
+                  'fill-primary': !isActive('/roles'),
+                }"
+              />
               Roles
             </router-link>
           </li>
-          <li class="h-11 px-3 bg-white rounded-2xl shadow">
+          <li
+            class="h-11 px-3 rounded-2xl shadow"
+            :class="{
+              'bg-primary': isActive('/fincas'),
+              'bg-white': !isActive('/fincas'),
+            }">
             <router-link
               to="/fincas"
-              class="w-full h-full flex items-center gap-2 font-bold text-primary">
-              <Icon name="location" class="inline-block w-4 h-4 fill-primary" />
+              class="w-full h-full flex items-center gap-2 font-bold"
+              :class="{
+                'text-white': isActive('/fincas'),
+                'text-primary': !isActive('/fincas'),
+              }">
+              <Icon
+                name="location"
+                class="inline-block w-4 h-4"
+                :class="{
+                  'fill-white': isActive('/fincas'),
+                  'fill-primary': !isActive('/fincas'),
+                }"
+              />
               Fincas
             </router-link>
           </li>
-          <li class="h-11 px-3 bg-white rounded-2xl shadow">
+          <li
+            class="h-11 px-3 rounded-2xl shadow"
+            :class="{
+              'bg-primary': isActive('/cultivos'),
+              'bg-white': !isActive('/cultivos'),
+            }">
             <router-link
               to="/cultivos"
-              class="w-full h-full flex items-center gap-2 font-bold text-primary">
-              <Icon name="plant" class="inline-block w-4 h-4 fill-primary" />
+              class="w-full h-full flex items-center gap-2 font-bold"
+              :class="{
+                'text-white': isActive('/cultivos'),
+                'text-primary': !isActive('/cultivos'),
+              }">
+              <Icon
+                name="plant"
+                class="inline-block w-4 h-4"
+                :class="{
+                  'fill-white': isActive('/cultivos'),
+                  'fill-primary': !isActive('/cultivos'),
+                }"
+              />
               Cultivos
             </router-link>
           </li>
@@ -166,7 +253,9 @@ onUnmounted(() => {
           <Icon name="info" class="w-5 h-5 fill-primary" />
         </div>
         <div class="w-full h-full hover:bg-gray-100">
-          <router-link to="/capturar" class="h-full w-full flex items-center justify-center">
+          <router-link
+            to="/capturar"
+            class="h-full w-full flex items-center justify-center">
             <Icon name="expandir" class="w-5 h-5 fill-primary" />
           </router-link>
         </div>

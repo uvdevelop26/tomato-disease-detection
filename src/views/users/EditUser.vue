@@ -1,74 +1,40 @@
 <script setup>
-import AppLayout from "@/components/Layout/AppLayout.vue";
-import { ref } from "vue";
-import axios from "axios";
-import Icon from "@/components/icons/Icon.vue";
+import { ref, onMounted } from 'vue';
+import AppLayout from '@/components/Layout/AppLayout.vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import Icon from '@/components/icons/Icon.vue';
 
-const nombre = ref(null);
-const apellido = ref(null);
-const dni = ref(null);
-const telefono = ref(null);
-const fecha_nacimiento = ref(null);
-const edad = ref(null);
-const sexo = ref(null);
-const ciudade_id = ref(null);
-const departamento = ref(null);
-const direccion = ref(null);
-const correo = ref(null);
-const role_id = ref(null);
-const password = ref(null);
-const message = ref(""); 
+// Obtener el parámetro de la URL
+const route = useRoute();
+const user = ref({});
+const message = ref("");
 
-const createUser = async () => {
+// Cargar los datos del usuario cuando se monta el componente
+onMounted(async () => {
+  const { id } = route.params;
   try {
-    const response = await axios.post(
-      "http://localhost:3000/api/users/create",
-      {
-        nombre: nombre.value,
-        apellido: apellido.value,
-        dni: dni.value,
-        telefono: telefono.value,
-        fecha_nacimiento: fecha_nacimiento.value,
-        edad: edad.value,
-        sexo: sexo.value,
-        ciudade_id: ciudade_id.value,
-        departamento: departamento.value,
-        direccion: direccion.value,
-        correo: correo.value,
-        role_id: role_id.value,
-        password: password.value,
-      }
-    );
-    
+    const response = await axios.get(`http://localhost:3000/api/users/${id}`);
+    user.value = response.data;
     message.value = response.data.message;
-
-    cleanForm();
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    console.error("Error al cargar el usuario:", error);
     message.value = error.response.data.message || "Error al crear el usuario";
   }
-};
+});
 
 const dismiss = () => {
   message.value = "";
 };
 
-const cleanForm = () => {
-  setTimeout(() => {
-    nombre.value = "";
-    apellido.value = "";
-    dni.value = "";
-    telefono.value = "";
-    fecha_nacimiento.value = "";
-    edad.value = "";
-    sexo.value = "";
-    ciudade_id.value = "";
-    departamento.value = "";
-    direccion.value = "";
-    correo.value = "";
-    role_id.value = "";
-    password.value = "";
-  }, 300);
+const updateUser = async () => {
+  try {
+    const { id } = route.params;
+    await axios.put(`http://localhost:3000/api/users/${id}`, user.value);
+    message.value = "Usuario Actualizado Correctamente"
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+  }
 };
 </script>
 
@@ -76,10 +42,10 @@ const cleanForm = () => {
   <AppLayout>
     <div class="flex flex-col gap-4 mb-40">
       <div class="flex items-center justify-between">
-        <h1 class="text-2xl text-primary font-bold underline">Nuevo Usuario</h1>
+        <h1 class="text-2xl text-primary font-bold underline">Editar Usuario</h1>
       </div>
       <form
-        @submit.prevent="createUser"
+        @submit.prevent="updateUser"
         class="max-w-2xl flex flex-col gap-4 md:mx-auto lg:max-w-5xl lg:mx-0"
       >
         <div
@@ -90,7 +56,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="nombre"
-              v-model="nombre"
+              v-model="user.nombre"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -99,7 +65,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="apellido"
-              v-model="apellido"
+              v-model="user.apellido"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -108,7 +74,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="dni"
-              v-model="dni"
+              v-model="user.dni"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -117,7 +83,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="telefono"
-              v-model="telefono"
+              v-model="user.telefono"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -128,7 +94,7 @@ const cleanForm = () => {
             <input
               type="date"
               name="fecha_nacimiento"
-              v-model="fecha_nacimiento"
+              v-model="user.fecha_nacimiento"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -139,7 +105,7 @@ const cleanForm = () => {
               min="1"
               max="100"
               name="edad"
-              v-model="edad"
+              v-model="user.edad"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -148,11 +114,11 @@ const cleanForm = () => {
             <input
               type="text"
               name="sexo"
-              v-model="sexo"
+              v-model="user.sexo"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
-          <div class="flex flex-col gap-1">
+           <!--<div class="flex flex-col gap-1">
             <label for="departamento" class="text-sm font-bold"
               >Departamento:</label
             >
@@ -160,19 +126,19 @@ const cleanForm = () => {
               id="departamento"
               name="departamento"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
-              v-model="departamento"
+              v-model="userdepartamento"
             >
               <option :value="null"></option>
               <option value="1" class="cursor-pointer">Guaira</option>
-            </select>
-          </div>
+            </select> 
+          </div>-->
           <div class="flex flex-col gap-1">
             <label for="ciudad" class="text-sm font-bold">Ciudad:</label>
             <select
               id="ciudad"
               name="ciudad"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
-              v-model="ciudade_id"
+              v-model="user.ciudade_id"
             >
               <option :value="null"></option>
               <option value="1" class="cursor-pointer">Troche</option>
@@ -183,7 +149,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="direccion"
-              v-model="direccion"
+              v-model="user.direccion"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -192,7 +158,7 @@ const cleanForm = () => {
             <input
               type="email"
               name="correo"
-              v-model="correo"
+              v-model="user.correo"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -201,7 +167,7 @@ const cleanForm = () => {
             <input
               type="password"
               name="password"
-              v-model="password"
+              v-model="user.password"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -211,7 +177,7 @@ const cleanForm = () => {
               id="rol"
               name="rol"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
-              v-model="role_id"
+              v-model="user.role_id"
             >
               <option :value="null"></option>
               <option value="1" class="cursor-pointer">Administrador</option>
@@ -222,7 +188,7 @@ const cleanForm = () => {
           type="submit"
           class="h-10 w-72 bg-primary text-white font-bold rounded-3xl text-sm hover:bg-light-green-two hover:text-primary"
         >
-          Agregar
+          Editar
         </button>
       </form>
       <div

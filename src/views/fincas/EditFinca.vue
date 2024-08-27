@@ -1,41 +1,38 @@
 <script setup>
 import AppLayout from "@/components/Layout/AppLayout.vue";
-import { ref } from "vue";
 import axios from "axios";
+import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
 import Icon from "@/components/icons/Icon.vue";
 
-const nombre = ref(null);
-const ubicacion = ref(null);
-const contacto = ref(null);
+const finca = ref({});
 const message = ref("");
+const route = useRoute();
 
-const createFinca = async () => {
+onMounted(async () => {
+  const { id } = route.params;
   try {
-    const response = await axios.post("http://localhost:3000/api/fincas/create", {
-      nombre: nombre.value,
-      ubicacion: ubicacion.value,
-      contacto: contacto.value,
-    });
-    // Manejar el éxito, como redirigir o mostrar un mensaje
+    const response = await axios.get(`http://localhost:3000/api/fincas/${id}`);
+    finca.value = response.data;
     message.value = response.data.message;
-
-    cleanForm();
   } catch (error) {
-    console.error("Error al crear la finca:", error);
-    message.value = error.response.data.message || "Error al crear la finca";
+    console.error("Error al cargar el usuario:", error);
+    message.value = error.response.data.message || "Error al crear el usuario";
   }
-};
+});
 
 const dismiss = () => {
   message.value = "";
 };
 
-const cleanForm = () => {
-  setTimeout(() => {
-     nombre.value = "";
-     ubicacion.value = "";
-     contacto.value = "";
-  }, 300);
+const updateFinca = async () => {
+  try {
+    const { id } = route.params;
+    await axios.put(`http://localhost:3000/api/fincas/${id}`, finca.value);
+    message.value = "Finca Actualizado Correctamente";
+  } catch (error) {
+    console.error("Error al actualizar la finca:", error);
+  }
 };
 </script>
 
@@ -43,10 +40,10 @@ const cleanForm = () => {
   <AppLayout>
     <div class="flex flex-col gap-4 mb-40">
       <div class="flex items-center justify-between">
-        <h1 class="text-2xl text-primary font-bold underline">Nueva Finca</h1>
+        <h1 class="text-2xl text-primary font-bold underline">Editar Finca</h1>
       </div>
       <form
-        @submit.prevent="createFinca"
+        @submit.prevent="updateFinca"
         class="max-w-2xl flex flex-col gap-4 md:mx-auto lg:max-w-5xl lg:mx-0"
       >
         <div
@@ -57,7 +54,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="nombre"
-              v-model="nombre"
+              v-model="finca.nombre"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -66,7 +63,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="ubicacion"
-              v-model="ubicacion"
+              v-model="finca.ubicacion"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -75,7 +72,7 @@ const cleanForm = () => {
             <input
               type="text"
               name="contacto"
-              v-model="contacto"
+              v-model="finca.contacto"
               class="h-10 w-72 px-2 bg-light-green-two rounded-lg text-sm text-primary"
             />
           </div>
@@ -84,7 +81,7 @@ const cleanForm = () => {
           type="submit"
           class="h-10 w-72 bg-primary text-white font-bold rounded-3xl text-sm hover:bg-light-green-two hover:text-primary"
         >
-          Agregar
+          Actualizar
         </button>
       </form>
       <div

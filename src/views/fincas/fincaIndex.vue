@@ -18,6 +18,17 @@ const fechFincas = async () => {
   }
 };
 
+// Función para eliminar un usuario
+const deleteFinca = async (fincaId) => {
+  try {
+    await axios.delete(`http://localhost:3000/api/fincas/${fincaId}`);
+    // Filtra el usuario eliminado de la lista de usuarios
+    fincas.value = fincas.value.filter((rol) => rol.id !== fincaId);
+  } catch (error) {
+    console.error("Error al eliminar la finca:", error);
+  }
+};
+
 // Llama a la función cuando el componente se monta
 onMounted(() => {
   fechFincas();
@@ -62,13 +73,15 @@ onMounted(() => {
                 class="py-1 px-1 bg-white group-hover:bg-gray-100 rounded-r-xl">
                 <div class="w-full h-full flex items-center justify-center gap-2">
                   <button
+                    @click="deleteFinca(finca.id)"
                     class="inline-block px-3 py-3 rounded-full bg-light-green-two hover:shadow-md">
                     <Icon name="delete" class="w-3 h-3 fill-primary" />
                   </button>
-                  <button
+                  <router-link
+                    :to="`/fincas/edit/${finca.id}`"
                     class="inline-block px-3 py-3 rounded-full bg-light-green-two hover:shadow-md">
                     <Icon name="edit" class="w-3 h-3 fill-primary" />
-                  </button>
+                  </router-link>
                 </div>
               </td>
             </tr>

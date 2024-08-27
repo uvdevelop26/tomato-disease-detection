@@ -38,4 +38,64 @@ router.post('/roles/create', (req, res) => {
     });
 });
 
+/* ruta para editar roles */
+router.get('/roles/:id', (req, res) => {
+    const userId = req.params.id;
+
+    const query = `SELECT * FROM roles WHERE id = ?`
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            console.error('Error al obtener el rol:', err);
+            return res.status(500).json({ message: 'Error al obtener el rol' });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Rol no encontrado' });
+        }
+
+        res.status(200).json(result[0]);
+    });
+});
+
+/* ruta para actualizar */
+router.put('/roles/:id', (req, res) => {
+    const roleId = req.params.id;
+    const { rol } = req.body;
+
+    // Consulta para actualizar la tabla "personas"
+    const queryRol = `
+        UPDATE roles 
+        SET rol = ?
+        WHERE id = ?
+    `;
+
+    // Actualizar la tabla "users" después de actualizar "personas"
+    db.query(queryRol, [rol, roleId], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar el rol:', err);
+            return res.status(500).json({ message: 'Error al actualizar el rol' });
+        }
+
+        res.status(200).json({ message: 'Rol actualizado correctamente' });
+    });
+
+});
+
+//delete rol
+router.delete('/roles/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Primero elimina el registro de la tabla personas
+    const deleteQuery = 'DELETE FROM roles WHERE id = ?';
+
+    db.query(deleteQuery, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar el rol:', err);
+            return res.status(500).json({ message: 'Error al eliminar el rol' });
+        }
+        res.status(200).json({ message: 'Rol eliminados exitosamente' });
+    });
+
+});
+
 export default router;
