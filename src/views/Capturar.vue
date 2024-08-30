@@ -16,7 +16,7 @@ let facingMode = "user"; // user/environment
 // Cargar el modelo de TensorFlow.js
 (async () => {
   console.log("Cargando modelo...");
-  modelo = await tf.loadLayersModel("saved.model.pb");
+  modelo = await tf.loadLayersModel("./tfjs_modeloguardado/model.json");
   console.log("Modelo cargado...");
 })();
 
