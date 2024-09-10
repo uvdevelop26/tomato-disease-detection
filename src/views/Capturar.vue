@@ -238,14 +238,12 @@ onMounted(() => {
             <button
               class="inline-block px-5 py-5 rounded-full bg-light-green-two hover:shadow-md"
               id="capturar-foto"
-              @click="tomarFoto"
-            >
+              @click="tomarFoto">
               <Icon name="circle" class="w-4 h-4 fill-primary" />
             </button>
             <button
               class="inline-block px-5 py-5 rounded-full bg-light-green-two hover:shadow-md"
-              @click="cambiarCamara"
-            >
+              @click="cambiarCamara">
               <Icon name="switch" class="w-4 h-4 fill-primary" />
             </button>
           </div>
